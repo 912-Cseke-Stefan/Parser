@@ -1,10 +1,13 @@
-﻿namespace Parser
+﻿using Parser;
+
+namespace Parser
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            Parser parser = new Parser("D:\\Sample.txt");
+            Console.WriteLine(parser);
             Console.ReadLine();
         }
     }
