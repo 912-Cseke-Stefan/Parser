@@ -1,29 +1,38 @@
-﻿using Nonterminal = string;
+﻿using System.Text;
+using Nonterminal = string;
 using Terminal = string;
+
 
 namespace Parser
 {
     public class Parser
     {
-        private List<Terminal> terminals = [];
-        private List<Nonterminal> nonterminals = [];
-        private Nonterminal startingSymbol = "";
-        private Dictionary<Nonterminal, List<List<string>>> productions = [];
+        private readonly List<Terminal> terminals = [];
+        private readonly List<Nonterminal> nonterminals = [];
+        private readonly Nonterminal startingSymbol = "";
+        private readonly Dictionary<Nonterminal, List<List<string>>> productions = [];
+
 
         public Parser(string filename) 
         {
-            StreamReader sr = new StreamReader(filename);
+            StreamReader sr = new(filename);
 
             string? line = sr.ReadLine()?.Trim();
             while (line != null)
             {
-                string element = line.Split('=')[0].Trim();
-                if (element == line)
+                string element = line.Split(":=")[0].Trim();
+                if (element == line )
                 {
                     // we are processing a production
                     // they can be scattered across the entire file for what I am concerned
                     string nonter = line.Split("->")[0];
-                    string refElem = nonterminals.FirstOrDefault(nonter);
+                    List<string> productions = [.. line.Split("->")[1].Split("|")];
+                    foreach (string production in productions)
+                    {
+                        List<string> elems = [.. production.Split(" ")];
+                        this.productions[nonter].Add(elems);
+                    }
+
                 }
                 else
                     switch (element) 
@@ -31,7 +40,10 @@ namespace Parser
                         case "N":
                             string nonterminals = line.Split('=')[1].Trim();
                             foreach (string nonterminal in nonterminals.Split(" "))
+                            {
                                 this.nonterminals.Add(nonterminal);
+                                this.productions.Add(nonterminal, []);
+                            }
                             break;
                         case "E":
                             string terminals = line.Split('=')[1].Trim();
@@ -52,32 +64,49 @@ namespace Parser
             sr.Close();
         }
 
+
         public override string ToString()
         {
-            string result = "";
-            result += "N = ";
+            StringBuilder result = new();
+            result.Append("N = ");
             foreach (string nonterminal in nonterminals)
-                result += nonterminal + " ";
-            result += "\nE = ";
-            foreach(string terminal in terminals)
-                result += terminal + " ";
-            result += "\nS = ";
-            result += startingSymbol;
-            result += "\nP = ";
+                result.Append($"{nonterminal} ");
 
-            return result;
+            result.Append("\nE = ");
+            foreach(string terminal in terminals)
+                result.Append($"{terminal} ");
+
+            result.Append($"\nS = {startingSymbol}");
+
+            result.Append("\nP = \n");
+            foreach (string nonterminal in nonterminals)
+                result.Append(ProductionsOf(nonterminal));
+
+            result.Append('\n');
+
+            return result.ToString();
         }
+
 
         public string ProductionsOf(Nonterminal nonterminal)
         {
-            string result = "";
-            if (productions.ContainsKey(nonterminal))
-                foreach (var rhs in productions[nonterminal])
-                    result += nonterminal + " -> " + rhs + "\n";
-            else
-                result += "Nonterminal does not exist\n";
+            StringBuilder result = new();
 
-            return result;
+            if (productions.TryGetValue(nonterminal, out List<List<string>>? value))
+            {
+                result.Append($"{nonterminal} -> ");
+                foreach (List<string> production in value)
+                {
+                    StringBuilder productionStr = new();
+                    foreach (string elem in production)
+                       productionStr.Append($"{elem} ");
+
+                    result.Append($"{productionStr} | ");
+                }
+                result.Append('\n');
+                return result.ToString();
+            }
+            return "";
         }
     }
 }
