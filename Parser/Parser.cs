@@ -67,5 +67,17 @@ namespace Parser
 
             return result;
         }
+
+        public string ProductionsOf(Nonterminal nonterminal)
+        {
+            string result = "";
+            if (productions.ContainsKey(nonterminal))
+                foreach (var rhs in productions[nonterminal])
+                    result += nonterminal + " -> " + rhs + "\n";
+            else
+                result += "Nonterminal does not exist\n";
+
+            return result;
+        }
     }
 }
