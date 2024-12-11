@@ -1,0 +1,29 @@
+N := Prog StatementList Statement VarStatement Type Number DigitList NonZeroDigit Digit Identifier Letter CharacterList AssignStatement Expression IntExpression ArithmeticOperator ComposedBoolExpression BoolExpression Boolean ComparisonOperator LogicOperator ReadStatement WriteStatement IfStatement ForStatement
+E := a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9 0 { } [ ] ( ) + - * / % && || ! < > = == != <= >= ; .. start stop read write int bool mut for in if else
+S := Prog
+P := 
+Prog -> start { StatementList } stop
+StatementList -> Statement ; StatementList | epsylon
+Statement -> VarStatement | AssignStatement | ReadStatement | WriteStatement | IfStatement | ForStatement
+VarStatement -> Type mut Identifier | Type Identifier
+Type -> int [ Number ] | bool [ Number ] | int | bool
+Number -> NonZeroDigit DigitList | 0
+DigitList -> Digit DigitList | epsylon
+NonZeroDigit -> 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+Digit -> NonZeroDigit | 0
+Identifier -> Letter CharacterList
+Letter -> a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z | A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z
+CharacterList -> Letter CharacterList | Digit CharacterList | epsilon
+AssignStatement -> Identifier = Expression
+Expression -> IntExpression | ComposedBoolExpression
+IntExpression -> Number | Identifier | IntExpression ArithmeticOperator IntExpression | ( IntExpression ArithmeticOperator IntExpression )
+ArithmeticOperator -> + | - | * | / | %
+ComposedBoolExpression -> BoolExpression | BoolExpression LogicOperator BoolExpression | ( BoolExpression LogicOperator BoolExpression )
+BoolExpression -> Boolean | Identifier | IntExpression ComparisonOperator IntExpression | ( IntExpression ComparisonOperator IntExpression )
+Boolean -> true | false
+ComparisonOperator -> == | <= | >= | < | >
+LogicOperator -> && | ||
+ReadStatement -> read ( Identifier )
+WriteStatement -> write ( Identifier )
+IfStatement -> if ComposedBoolExpression { StatementList } | if ComposedBoolExpression { StatementList } else { StatementList }
+ForStatement -> for Identifier in Number .. Number { StatementList }
