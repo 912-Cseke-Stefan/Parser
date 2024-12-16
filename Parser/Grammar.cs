@@ -12,6 +12,8 @@ namespace Parser
         private readonly Nonterminal startingSymbol = "";
         private readonly Dictionary<Nonterminal, List<List<string>>> productions = [];
 
+        public Nonterminal StartingSymbol { get { return startingSymbol; } }
+
 
         public Grammar(string filename) 
         {
