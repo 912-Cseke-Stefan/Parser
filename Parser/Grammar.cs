@@ -15,6 +15,7 @@ namespace Parser
         public Nonterminal StartingSymbol { get { return startingSymbol; } }
         public List<Nonterminal> Nonterminals { get { return nonterminals; } }
         public List<Terminal> Terminals { get { return terminals; } }
+        public Dictionary<Nonterminal, List<List<string>>> Productions { get { return productions; } }
 
 
         public Grammar(string filename) 
