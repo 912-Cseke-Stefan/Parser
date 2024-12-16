@@ -8,7 +8,6 @@ namespace Parser
     {
         private readonly Grammar grammar;
         private readonly List<Terminal> input;
-        private readonly Stack<string> productions; // To keep track of expansions
         private int index; // Pointer to the current input position
         private Stack<string> alpha; // Partial production rule (α)
         private Stack<Symbol> beta;  // Remaining production (β)
@@ -19,8 +18,7 @@ namespace Parser
             this.input = input;
             grammar = new Grammar(filename);
 
-            productions = new Stack<string>();
-            index = 1;
+            index = 0;
             state = 'q';
             alpha = new Stack<string>();
             beta = new Stack<Terminal>();
@@ -70,38 +68,28 @@ namespace Parser
             {
                 if (state == 'q')
                 {
-                    if (index == input.Length && string.IsNullOrEmpty(beta)) // Success condition
+                    if (index == input.Count && beta.Count == 0) // Success condition
                     {
                         state = 'f';
                         Success();
                     }
-                    else if (!string.IsNullOrEmpty(beta))
+                    else if (beta.Count > 0)
                     {
-                        char head = beta[0];
-                        if (char.IsUpper(head)) // Head(β) = Non-terminal
-                        {
+                        Symbol head = beta.Peek();
+                        if (grammar.Nonterminals.FirstOrDefault(head) != default)  // Head(β) = Non-terminal
                             Expand();
-                        }
-                        else if (index < input.Length && beta[0] == input[index]) // Head(β) matches input
-                        {
+                        else if (index < input.Count && head == input[index])      // Head(β) matches input
                             Advance();
-                        }
-                        else // Mismatch
-                        {
+                        else                                                       // Mismatch
                             MomentaryInsuccess();
-                        }
                     }
                 }
                 else if (state == 'b') // Backtrack state
                 {
-                    if (!string.IsNullOrEmpty(alpha) && alpha[0] == 'a') // Head(α) condition
-                    {
+                    if (alpha.Count > 0 && grammar.Terminals.FirstOrDefault(alpha.Peek()) != default)  // Head(α) is terminal
                         Back();
-                    }
                     else
-                    {
                         AnotherTry();
-                    }
                 }
             }
 
