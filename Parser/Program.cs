@@ -11,7 +11,7 @@
                     directory = directory.Parent;
                 Environment.CurrentDirectory = (directory.ToString());
 
-                Parser parser = new("grammars/g2.txt");
+                Grammar parser = new("grammars/g1.txt");
                 Console.WriteLine(parser);
             }
             catch (Exception e)

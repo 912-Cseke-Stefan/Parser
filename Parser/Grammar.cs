@@ -5,7 +5,7 @@ using Terminal = string;
 
 namespace Parser
 {
-    public class Parser
+    public class Grammar
     {
         private readonly List<Terminal> terminals = [];
         private readonly List<Nonterminal> nonterminals = [];
@@ -13,7 +13,7 @@ namespace Parser
         private readonly Dictionary<Nonterminal, List<List<string>>> productions = [];
 
 
-        public Parser(string filename) 
+        public Grammar(string filename) 
         {
             StreamReader sr = new(filename);
 
