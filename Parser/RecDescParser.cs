@@ -47,12 +47,15 @@ namespace Parser
         private void Back()
         {
             Console.WriteLine($"Back: index={index}, α={alpha}");
+            index--;
+            beta.Push(alpha.Pop());
         }
 
         // Another Try: Retry with alternative rule
         private void AnotherTry()
         {
             Console.WriteLine("Another Try: Trying alternative rule");
+
         }
 
         // Success: Entire input parsed correctly
