@@ -1,4 +1,5 @@
 ﻿using Terminal = string;
+using Nonterminal = string;
 using Symbol = string;
 
 
@@ -28,37 +29,90 @@ namespace Parser
         // Expand: Expand non-terminal at the head of β
         private void Expand()
         {
-            Console.WriteLine($"Expand: β = {beta}");
+            string head = beta.Pop();
+            List<Symbol> production = grammar.Productions[head][0];
+            int number_of_production = 0;
+            if (alpha.Count > 0)
+                number_of_production = int.Parse(alpha.Peek().Split('~')[1]) + 1;
+
+            alpha.Push(head + "~" + number_of_production);
+
+
+            for (int i = production.Count - 1; i >= 0; i--)
+            {
+                beta.Push(production[i]);
+            }
+
+            Console.WriteLine($"Expand: Non-terminal {head} expanded using production {production}");
         }
+
 
         // Advance: Match terminal and move input pointer
         private void Advance()
         {
-            Console.WriteLine($"Advance: Matched {input[index]}");
+            string terminal = beta.Pop();
+            index++;
+
+            alpha.Push(terminal);
+
+            Console.WriteLine($"Advance: Matched terminal '{terminal}', index now at {index}");
         }
+
 
         // Momentary Insuccess: Current input does not match expected
         private void MomentaryInsuccess()
         {
-            Console.WriteLine($"Momentary Insuccess: index={index}, β={beta}");
+            state = 'b';
+
+            Console.WriteLine($"Momentary Insuccess: Input at index {index} does not match head of β.");
         }
+
 
         // Back: Undo last move
         private void Back()
         {
             Console.WriteLine($"Back: index={index}, α={alpha}");
+            index--;
+            beta.Push(alpha.Pop());
         }
 
         // Another Try: Retry with alternative rule
         private void AnotherTry()
         {
-            Console.WriteLine("Another Try: Trying alternative rule");
+            string production_of_nonterminal = alpha.Pop();
+            int number_of_production = int.Parse(production_of_nonterminal.Split('~')[1]);
+            Nonterminal nonterminal = production_of_nonterminal.Split('~')[0];
+            if (number_of_production < grammar.Productions[nonterminal].Count - 1)
+            {
+                Console.WriteLine("Another Try 1");
+                alpha.Push(nonterminal + "~" + (number_of_production + 1));  //?
+                List<Symbol> current_production = grammar.Productions[nonterminal][number_of_production];
+                foreach (Symbol current in current_production)
+                    if (current == beta.Peek())  // little safeguard
+                        beta.Pop();
+                    else
+                        Console.WriteLine("Something went horribly wrong");
+
+                List<Symbol> new_production = grammar.Productions[nonterminal][number_of_production + 1];
+                for (int aux = new_production.Count - 1; aux >= 0; aux--)
+                    beta.Push(new_production[aux]);
+
+                state = 'q';
+            }
+            else if (number_of_production == grammar.Productions[nonterminal].Count - 1)
+            {
+                Console.WriteLine("Another Try 2");
+                beta.Push(nonterminal);
+            }
+            else if (index == 0 && nonterminal == grammar.StartingSymbol)
+                state = 'e';
         }
 
         // Success: Entire input parsed correctly
         private void Success()
         {
-            Console.WriteLine("Success: Sequence accepted!");
+            Console.WriteLine("Success: The input sequence was parsed successfully!");
+            Console.WriteLine($"Final State: index = {index}, α = [{alpha}], β = []");
         }
 
         // Main parsing method
@@ -97,6 +151,14 @@ namespace Parser
             {
                 Console.WriteLine("Error: Input could not be parsed!");
             }
+        }
+
+        public void SetState(int index, Stack<string> alpha, Stack<Symbol> beta, char state)
+        {
+            this.index = index;
+            this.alpha = alpha;
+            this.beta = beta;
+            this.state = state;
         }
     }
 }
