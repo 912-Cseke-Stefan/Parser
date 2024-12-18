@@ -72,11 +72,16 @@ namespace Parser
                 List<Symbol> new_production = grammar.Productions[nonterminal][number_of_production + 1];
                 for (int aux = new_production.Count - 1; aux >= 0; aux--)
                     beta.Push(new_production[aux]);
+
+                state = 'q';
             }
             else if (number_of_production == grammar.Productions[nonterminal].Count - 1)
             {
                 Console.WriteLine("Another Try 2");
+                beta.Push(nonterminal);
             }
+            else if (index == 0 && nonterminal == grammar.StartingSymbol)
+                state = 'e';
         }
 
         // Success: Entire input parsed correctly
