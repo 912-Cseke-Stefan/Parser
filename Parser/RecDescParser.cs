@@ -127,5 +127,13 @@ namespace Parser
                 Console.WriteLine("Error: Input could not be parsed!");
             }
         }
+
+        public void SetState(int index, Stack<string> alpha, Stack<Symbol> beta, char state)
+        {
+            this.index = index;
+            this.alpha = alpha;
+            this.beta = beta;
+            this.state = state;
+        }
     }
 }
