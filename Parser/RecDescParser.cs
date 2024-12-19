@@ -12,7 +12,7 @@ namespace Parser
         private int index; // Pointer to the current input position
         private Stack<string> alpha; // Partial production rule (α)
         private Stack<Symbol> beta;  // Remaining production (β)
-        private char state;   // Current state: q, b, or e
+        private char state;   // Current state: q, b, e of f
 
         public RecDescParser(List<string> input, string filename)
         {
@@ -75,14 +75,11 @@ namespace Parser
                 index--;
             beta.Push(alpha.Pop());
         }
-        //private static int counter = 0;
+        
 
         // Another Try: Retry with alternative rule
         private void AnotherTry()
         {
-            //counter++;
-            //if (counter >= 5)
-            //    Console.WriteLine("BaLLs");
             string production_of_nonterminal = alpha.Pop();
             int number_of_production = int.Parse(production_of_nonterminal.Split('~')[1]);
             Nonterminal nonterminal = production_of_nonterminal.Split('~')[0];
@@ -156,18 +153,6 @@ namespace Parser
                 }
                 else if (state == 'b') // Backtrack state
                 {
-                    /*foreach (string a in grammar.Terminals)
-                        Console.WriteLine(a);
-                    List<string> asdf = ["a", "b", "=", "int"];
-                    Stack<string> zxcv = new();
-                    zxcv.Push("qwer");
-                    zxcv.Push("int");
-
-                    foreach (string a in asdf)
-                        if (a == "int")
-                            Console.WriteLine(a);
-
-                    Console.WriteLine(asdf.FirstOrDefault(v => v == zxcv.Peek()));*/
                     if (alpha.Count > 0 && grammar.Terminals.FirstOrDefault(v => v == alpha.Peek()) != default)  // Head(α) is terminal
                         Back();
                     else
