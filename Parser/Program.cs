@@ -11,8 +11,9 @@
                     directory = directory.Parent;
                 Environment.CurrentDirectory = (directory.ToString());
 
-                Grammar parser = new("grammars/g1.txt");
-                Console.WriteLine(parser);
+                //RecDescParser parser = new(["a", "a", "c", "b", "c"], "grammars/g1.txt");
+                RecDescParser parser = new(["a", "a", "c", "c", "c"], "grammars/g1.txt");
+                parser.Parse();
             }
             catch (Exception e)
             {

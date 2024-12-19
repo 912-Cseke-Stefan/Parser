@@ -32,8 +32,6 @@ namespace Parser
             string head = beta.Pop();
             List<Symbol> production = grammar.Productions[head][0];
             int number_of_production = 0;
-            if (alpha.Count > 0)
-                number_of_production = int.Parse(alpha.Peek().Split('~')[1]) + 1;
 
             alpha.Push(head + "~" + number_of_production);
 
@@ -51,7 +49,8 @@ namespace Parser
         private void Advance()
         {
             string terminal = beta.Pop();
-            index++;
+            if (terminal != "")
+                index++;
 
             alpha.Push(terminal);
 
@@ -72,13 +71,18 @@ namespace Parser
         private void Back()
         {
             Console.WriteLine($"Back: index={index}, α={alpha}");
-            index--;
+            if (alpha.Peek() != "")
+                index--;
             beta.Push(alpha.Pop());
         }
+        //private static int counter = 0;
 
         // Another Try: Retry with alternative rule
         private void AnotherTry()
         {
+            //counter++;
+            //if (counter >= 5)
+            //    Console.WriteLine("BaLLs");
             string production_of_nonterminal = alpha.Pop();
             int number_of_production = int.Parse(production_of_nonterminal.Split('~')[1]);
             Nonterminal nonterminal = production_of_nonterminal.Split('~')[0];
@@ -102,6 +106,13 @@ namespace Parser
             else if (number_of_production == grammar.Productions[nonterminal].Count - 1)
             {
                 Console.WriteLine("Another Try 2");
+                List<Symbol> current_production = grammar.Productions[nonterminal][number_of_production];
+                foreach (Symbol current in current_production)
+                    if (current == beta.Peek())  // little safeguard
+                        beta.Pop();
+                    else
+                        Console.WriteLine("Something went horribly wrong");
+
                 beta.Push(nonterminal);
             }
             else if (index == 0 && nonterminal == grammar.StartingSymbol)
@@ -118,6 +129,7 @@ namespace Parser
         // Main parsing method
         public void Parse()
         {
+            
             while (state != 'e' && state != 'f') // e = error, f = success
             {
                 if (state == 'q')
@@ -126,21 +138,35 @@ namespace Parser
                     {
                         state = 'f';
                         Success();
+                        foreach (string asdf in alpha)
+                            Console.WriteLine(asdf);
                     }
                     else if (beta.Count > 0)
                     {
                         Symbol head = beta.Peek();
-                        if (grammar.Nonterminals.FirstOrDefault(head) != default)  // Head(β) = Non-terminal
+                        if (grammar.Nonterminals.FirstOrDefault(v => v == head) != default)    // Head(β) = Non-terminal
                             Expand();
-                        else if (index < input.Count && head == input[index])      // Head(β) matches input
+                        else if (index < input.Count && (head == input[index] || head == ""))  // Head(β) matches input
                             Advance();
-                        else                                                       // Mismatch
+                        else                                                                   // Mismatch
                             MomentaryInsuccess();
                     }
                 }
                 else if (state == 'b') // Backtrack state
                 {
-                    if (alpha.Count > 0 && grammar.Terminals.FirstOrDefault(alpha.Peek()) != default)  // Head(α) is terminal
+                    /*foreach (string a in grammar.Terminals)
+                        Console.WriteLine(a);
+                    List<string> asdf = ["a", "b", "=", "int"];
+                    Stack<string> zxcv = new();
+                    zxcv.Push("qwer");
+                    zxcv.Push("int");
+
+                    foreach (string a in asdf)
+                        if (a == "int")
+                            Console.WriteLine(a);
+
+                    Console.WriteLine(asdf.FirstOrDefault(v => v == zxcv.Peek()));*/
+                    if (alpha.Count > 0 && grammar.Terminals.FirstOrDefault(v => v == alpha.Peek()) != default)  // Head(α) is terminal
                         Back();
                     else
                         AnotherTry();

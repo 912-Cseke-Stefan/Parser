@@ -40,8 +40,9 @@ namespace Parser
                     foreach (string production in productions)
                     {
                         List<string> elems = [.. production.Split(" ")];
-                        for (int i = 0; i < elems.Count; i -= -1)
-                            elems[i] = elems[i].Trim();
+                        for (int i = 0; i < elems.Count; i-=-1)
+                            if (elems[i] == "epsilon")
+                                elems[i] = "";
                         this.productions[nonter].Add(elems);
                     }
                 }
@@ -57,7 +58,7 @@ namespace Parser
                             }
                             break;
                         case "E":
-                            string terminals = line.Split('=')[1].Trim();
+                            string terminals = line.Split(":=")[1].Trim();
                             foreach (string termimal in terminals.Split(" "))
                                 this.terminals.Add(termimal.Trim());
                             break;
