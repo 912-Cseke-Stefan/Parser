@@ -151,6 +151,8 @@ namespace Parser
                         else                                                                   // Mismatch
                             MomentaryInsuccess();
                     }
+                    else if (beta.Count == 0)  // would happen when word is not part of the language
+                        MomentaryInsuccess();
                 }
                 else if (state == 'b') // Backtrack state
                 {

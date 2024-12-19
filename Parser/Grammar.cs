@@ -60,7 +60,10 @@ namespace Parser
                         case "E":
                             string terminals = line.Split(":=")[1].Trim();
                             foreach (string termimal in terminals.Split(" "))
-                                this.terminals.Add(termimal.Trim());
+                                if (termimal == "epsilon")
+                                    this.terminals.Add("");
+                                else
+                                    this.terminals.Add(termimal);
                             break;
                         case "S":
                             string start = line.Split('=')[1].Trim();
