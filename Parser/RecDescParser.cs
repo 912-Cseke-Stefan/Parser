@@ -41,7 +41,7 @@ namespace Parser
                 beta.Push(production[i]);
             }
 
-            Console.WriteLine($"Expand: Non-terminal {head} expanded using production {production}");
+            Console.WriteLine($"Expand: Non-terminal {head} expanded using production {number_of_production}");
         }
 
 
@@ -63,14 +63,15 @@ namespace Parser
         {
             state = 'b';
 
-            Console.WriteLine($"Momentary Insuccess: Input at index {index} does not match head of β.");
+            Console.WriteLine($"Momentary Insuccess: Input at index {index} ({input[index]}) does not match head of β ({beta.Peek()}).");
         }
 
 
         // Back: Undo last move
         private void Back()
         {
-            Console.WriteLine($"Back: index={index}, α={alpha}");
+            Console.WriteLine($"Back: index is {index}, head of α is {alpha.Peek()}");
+
             if (alpha.Peek() != "")
                 index--;
             beta.Push(alpha.Pop());
@@ -97,7 +98,7 @@ namespace Parser
 
                 if (number_of_production < grammar.Productions[nonterminal].Count - 1)
                 {
-                    Console.WriteLine("Another Try 1");
+                    Console.WriteLine($"Another Try 1: Trying another production of nonterminal {nonterminal}");
 
                     alpha.Push(nonterminal + "~" + (number_of_production + 1));  //?
 
@@ -109,7 +110,7 @@ namespace Parser
                 }
                 else if (number_of_production == grammar.Productions[nonterminal].Count - 1)
                 {
-                    Console.WriteLine("Another Try 2");
+                    Console.WriteLine($"Another Try 2: Finished all productions of nonterminal {nonterminal}");
 
                     beta.Push(nonterminal);
                 }
