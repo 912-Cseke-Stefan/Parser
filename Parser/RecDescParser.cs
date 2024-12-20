@@ -81,10 +81,6 @@ namespace Parser
         // Another Try: Retry with alternative rule
         private void AnotherTry()
         {
-            if (index == 0 && beta.Peek() == grammar.StartingSymbol)
-                state = 'e';
-            else
-            {
                 string production_of_nonterminal = alpha.Pop();
                 int number_of_production = int.Parse(production_of_nonterminal.Split('~')[1]);
                 Nonterminal nonterminal = production_of_nonterminal.Split('~')[0];
@@ -113,7 +109,9 @@ namespace Parser
                     Console.WriteLine($"Another Try 2: Finished all productions of nonterminal {nonterminal}");
 
                     beta.Push(nonterminal);
-                }
+
+                if (index == 0 && beta.Peek() == grammar.StartingSymbol)
+                    state = 'e';
             }
         }
 
