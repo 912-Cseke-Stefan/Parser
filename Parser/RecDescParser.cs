@@ -63,7 +63,10 @@ namespace Parser
         {
             state = 'b';
 
-            Console.WriteLine($"Momentary Insuccess: Input at index {index} ({input[index]}) does not match head of β ({beta.Peek()}).");
+            if (index < input.Count && beta.Count > 0)
+                Console.WriteLine($"Momentary Insuccess: Input at index {index} ({input[index]}) does not match head of β ({beta.Peek()}).");
+            else
+                Console.WriteLine("Momentary Insuccess");
         }
 
 
@@ -81,34 +84,34 @@ namespace Parser
         // Another Try: Retry with alternative rule
         private void AnotherTry()
         {
-                string production_of_nonterminal = alpha.Pop();
-                int number_of_production = int.Parse(production_of_nonterminal.Split('~')[1]);
-                Nonterminal nonterminal = production_of_nonterminal.Split('~')[0];
-                List<Symbol> current_production = grammar.Productions[nonterminal][number_of_production];
+            string production_of_nonterminal = alpha.Pop();
+            int number_of_production = int.Parse(production_of_nonterminal.Split('~')[1]);
+            Nonterminal nonterminal = production_of_nonterminal.Split('~')[0];
+            List<Symbol> current_production = grammar.Productions[nonterminal][number_of_production];
 
-                foreach (Symbol current in current_production)
-                    if (current == beta.Peek())  // little safeguard
-                        beta.Pop();
-                    else
-                        Console.WriteLine("Something went horribly wrong");
+            foreach (Symbol current in current_production)
+                if (current == beta.Peek())  // little safeguard
+                    beta.Pop();
+                else
+                    Console.WriteLine("Something went horribly wrong");
 
-                if (number_of_production < grammar.Productions[nonterminal].Count - 1)
-                {
-                    Console.WriteLine($"Another Try 1: Trying another production of nonterminal {nonterminal}");
+            if (number_of_production < grammar.Productions[nonterminal].Count - 1)
+            {
+                Console.WriteLine($"Another Try 1: Trying another production of nonterminal {nonterminal}");
 
-                    alpha.Push(nonterminal + "~" + (number_of_production + 1));  //?
+                alpha.Push(nonterminal + "~" + (number_of_production + 1));  //?
 
-                    List<Symbol> new_production = grammar.Productions[nonterminal][number_of_production + 1];
-                    for (int aux = new_production.Count - 1; aux >= 0; aux--)
-                        beta.Push(new_production[aux]);
+                List<Symbol> new_production = grammar.Productions[nonterminal][number_of_production + 1];
+                for (int aux = new_production.Count - 1; aux >= 0; aux--)
+                    beta.Push(new_production[aux]);
 
-                    state = 'q';
-                }
-                else if (number_of_production == grammar.Productions[nonterminal].Count - 1)
-                {
-                    Console.WriteLine($"Another Try 2: Finished all productions of nonterminal {nonterminal}");
+                state = 'q';
+            }
+            else if (number_of_production == grammar.Productions[nonterminal].Count - 1)
+            {
+                Console.WriteLine($"Another Try 2: Finished all productions of nonterminal {nonterminal}");
 
-                    beta.Push(nonterminal);
+                beta.Push(nonterminal);
 
                 if (index == 0 && beta.Peek() == grammar.StartingSymbol)
                     state = 'e';
