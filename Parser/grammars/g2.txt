@@ -1,5 +1,5 @@
 N := Prog StatementList Statement VarStatement Type Number DigitList NonZeroDigit Digit Identifier Letter CharacterList AssignStatement Expression IntExpression ArithmeticOperator ComposedBoolExpression BoolExpression Boolean ComparisonOperator LogicOperator ReadStatement WriteStatement IfStatement ForStatement
-E := a b c d e f g h i j k l m n o p q r s !a=aa= t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9 { } [ ] ( ) + - * / % && || ! int < > != <= >= ; .. start stop read write bool mut for in if else = == epsilon
+E := a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9 { } [ ] ( ) + - * / % && || ! int < > != <= >= ; .. start stop read write bool mut for in if else = == epsilon
 S := Prog
 P := 
 Prog -> start { StatementList } stop
@@ -8,7 +8,7 @@ Statement -> VarStatement | AssignStatement | ReadStatement | WriteStatement | I
 VarStatement -> Type mut Identifier | Type Identifier
 Type -> int [ Number ] | bool [ Number ] | int | bool
 Number -> NonZeroDigit DigitList | 0
-DigitList -> Digit DigitList | epsylon
+DigitList -> Digit DigitList | epsilon
 NonZeroDigit -> 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 Digit -> NonZeroDigit | 0
 Identifier -> Letter CharacterList
