@@ -126,6 +126,76 @@ namespace Parser
             Console.WriteLine($"Final State: index = {index}, α = [{alpha}], β = []");
         }
 
+
+        public string GenerateSyntaxTreeTable()
+        {
+            List<string> table = [];
+
+            Stack<string> reversed_alpha = new(alpha);
+            Stack<int> parents = [];
+            parents.Push(0);
+            Stack<int> no_of_descendants = [];
+            no_of_descendants.Push(1);
+            Stack<int> left_siblings = [];
+            left_siblings.Push(0);
+            int index = 1;
+
+            foreach (string element_of_alpha in reversed_alpha)
+            {
+                if (grammar.Nonterminals.FirstOrDefault(v => v == element_of_alpha.Split('~')[0]) != default)
+                {
+                    int number_of_production = int.Parse(element_of_alpha.Split('~')[1]);
+                    Nonterminal nonterminal = element_of_alpha.Split('~')[0];
+
+                    table.Add($"{index} | {nonterminal} | {parents.Peek()} | {left_siblings.Peek()}");
+
+                    no_of_descendants.Push(no_of_descendants.Pop() - 1);
+                    if (no_of_descendants.Peek() == 0)
+                    {
+                        no_of_descendants.Pop();
+                        parents.Pop();
+                        left_siblings.Pop();
+                    }
+                    else
+                    {
+                        left_siblings.Pop();
+                        left_siblings.Push(index);
+                    }
+
+                    parents.Push(index);
+                    no_of_descendants.Push(grammar.Productions[nonterminal][number_of_production].Count);
+                    left_siblings.Push(0);
+                }
+                else
+                {
+                    if (element_of_alpha == "")
+                        table.Add($"{index} | epsilon | {parents.Peek()} | {left_siblings.Peek()}");
+                    else
+                        table.Add($"{index} | {element_of_alpha} | {parents.Peek()} | {left_siblings.Peek()}");
+
+                    no_of_descendants.Push(no_of_descendants.Pop() - 1);
+                    if (no_of_descendants.Peek() == 0)
+                    {
+                        no_of_descendants.Pop();
+                        parents.Pop();
+                        left_siblings.Pop();
+                    }
+                    else
+                    {
+                        left_siblings.Pop();
+                        left_siblings.Push(index);
+                    }
+                }
+
+                index++;
+            }
+
+            string ret = "";
+            foreach (string row in table)
+                ret += row + '\n';
+            return ret;
+        }
+
         // Main parsing method
         public void Parse()
         {
@@ -138,8 +208,6 @@ namespace Parser
                     {
                         state = 'f';
                         Success();
-                        foreach (string asdf in alpha)
-                            Console.WriteLine(asdf);
                     }
                     else if (beta.Count > 0)
                     {
