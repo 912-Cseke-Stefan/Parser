@@ -5,14 +5,14 @@ using Symbol = string;
 
 namespace Parser
 {
-    internal class RecDescParser
+    internal partial class RecDescParser
     {
         private readonly Grammar grammar;
         private readonly List<Terminal> input;
-        public int index { get; set; } // Pointer to the current input position
-        public Stack<string> alpha { get; set; } // Partial production rule (α)
-        public Stack<Symbol> beta { get; set; }  // Remaining production (β)
-        public char state { get; set; }   // Current state: q, b, e of f
+        private int index;  // Pointer to the current input position
+        private Stack<string> alpha;  // Partial production rule (α)
+        private Stack<Symbol> beta;  // Remaining production (β)
+        private char state;  // Current state: q, b, e of f
 
         public RecDescParser(List<string> input, string filename)
         {
