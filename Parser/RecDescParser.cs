@@ -9,10 +9,10 @@ namespace Parser
     {
         private readonly Grammar grammar;
         private readonly List<Terminal> input;
-        private int index; // Pointer to the current input position
-        private Stack<string> alpha; // Partial production rule (α)
-        private Stack<Symbol> beta;  // Remaining production (β)
-        private char state;   // Current state: q, b, e of f
+        public int index { get; set; } // Pointer to the current input position
+        public Stack<string> alpha { get; set; } // Partial production rule (α)
+        public Stack<Symbol> beta { get; set; }  // Remaining production (β)
+        public char state { get; set; }   // Current state: q, b, e of f
 
         public RecDescParser(List<string> input, string filename)
         {
@@ -27,7 +27,7 @@ namespace Parser
         }
 
         // Expand: Expand non-terminal at the head of β
-        private void Expand()
+        public void Expand()
         {
             string head = beta.Pop();
             List<Symbol> production = grammar.Productions[head][0];
@@ -46,7 +46,7 @@ namespace Parser
 
 
         // Advance: Match terminal and move input pointer
-        private void Advance()
+        public void Advance()
         {
             string terminal = beta.Pop();
             if (terminal != "")
@@ -59,7 +59,7 @@ namespace Parser
 
 
         // Momentary Insuccess: Current input does not match expected
-        private void MomentaryInsuccess()
+        public void MomentaryInsuccess()
         {
             state = 'b';
 
@@ -71,7 +71,7 @@ namespace Parser
 
 
         // Back: Undo last move
-        private void Back()
+        public void Back()
         {
             Console.WriteLine($"Back: index is {index}, head of α is {alpha.Peek()}");
 
@@ -82,7 +82,7 @@ namespace Parser
         
 
         // Another Try: Retry with alternative rule
-        private void AnotherTry()
+        public void AnotherTry()
         {
             string production_of_nonterminal = alpha.Pop();
             int number_of_production = int.Parse(production_of_nonterminal.Split('~')[1]);
@@ -119,8 +119,9 @@ namespace Parser
         }
 
         // Success: Entire input parsed correctly
-        private void Success()
+        public void Success()
         {
+            state = 'f';
             Console.WriteLine("Success: The input sequence was parsed successfully!");
             Console.WriteLine($"Final State: index = {index}, α = [{alpha}], β = []");
         }
