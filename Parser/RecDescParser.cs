@@ -161,7 +161,7 @@ namespace Parser
                         left_siblings.Push(index);
                     }
 
-                    parents.Push(index++);
+                    parents.Push(index);
                     no_of_descendants.Push(grammar.Productions[nonterminal][number_of_production].Count);
                     left_siblings.Push(0);
                 }
@@ -178,14 +178,15 @@ namespace Parser
                         no_of_descendants.Pop();
                         parents.Pop();
                         left_siblings.Pop();
-                        index++;
                     }
                     else
                     {
                         left_siblings.Pop();
-                        left_siblings.Push(index++);
+                        left_siblings.Push(index);
                     }
                 }
+
+                index++;
             }
 
             string ret = "";
