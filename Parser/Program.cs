@@ -16,8 +16,8 @@
                 //RecDescParser parser = new(["a", "c", "b", "c"], "grammars/g1.txt");
                 //RecDescParser parser = new(["a", "c"], "grammars/g1.txt");
                 RecDescParser parser = new(["start", "{", "int", "x", ";", "}", "stop"], "grammars/g2.txt");
-                //Grammar parser = new("grammars/g1.txt");
-                //Console.WriteLine(parser);
+                //Grammar grammar = new("grammars/g1.txt");
+                //Console.WriteLine(grammar);
                 parser.Parse(); 
                 
                 StreamWriter sw = new("out.out");

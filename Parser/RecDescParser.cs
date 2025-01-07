@@ -141,10 +141,6 @@ namespace Parser
 
             foreach (string element_of_alpha in reversed_alpha)
             {
-                //Console.Write(element_of_alpha + ": ");
-                //foreach (int asdf in left_siblings)
-                //    Console.Write(asdf + " ");
-                //Console.WriteLine();
                 if (grammar.Nonterminals.FirstOrDefault(v => v == element_of_alpha.Split('~')[0]) != default)
                 {
                     int number_of_production = int.Parse(element_of_alpha.Split('~')[1]);
@@ -210,9 +206,6 @@ namespace Parser
                     {
                         state = 'f';
                         Success();
-
-                        //foreach (string asdf in alpha)
-                        //    Console.WriteLine(asdf);
                     }
                     else if (beta.Count > 0)
                     {
