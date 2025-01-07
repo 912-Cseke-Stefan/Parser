@@ -13,11 +13,18 @@
 
                 //RecDescParser parser = new(["a", "a", "c", "b", "c"], "grammars/g1.txt");
                 //RecDescParser parser = new(["a", "a", "c", "c", "c"], "grammars/g1.txt");
+                //RecDescParser parser = new(["a", "c", "b", "c"], "grammars/g1.txt");
                 //RecDescParser parser = new(["a", "c"], "grammars/g1.txt");
-                RecDescParser parser = new(["start", "{", "intt", "x", ";", "}", "stop"], "grammars/g2.txt");
+                RecDescParser parser = new(["start", "{", "int", "x", ";", "}", "stop"], "grammars/g2.txt");
                 //Grammar parser = new("grammars/g1.txt");
                 //Console.WriteLine(parser);
-                parser.Parse();
+                parser.Parse(); 
+                
+                StreamWriter sw = new("out.out");
+                sw.Write(parser.GenerateSyntaxTreeTable());
+                sw.Close();
+
+
             }
             catch (Exception e)
             {
