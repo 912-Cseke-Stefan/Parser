@@ -1,10 +1,11 @@
-N := Prog StatementList Statement VarStatement Type Number DigitList NonZeroDigit Digit Identifier Letter CharacterList AssignStatement Expression IntExpression ArithmeticOperator ComposedBoolExpression BoolExpression Boolean ComparisonOperator LogicOperator ReadStatement WriteStatement IfStatement ForStatement
+N := Prog StatementList SimpleStatement BlockStatement VarStatement Type Number DigitList NonZeroDigit Digit Identifier Letter CharacterList AssignStatement Expression IntExpression ArithmeticOperator ComposedBoolExpression BoolExpression Boolean ComparisonOperator LogicOperator ReadStatement WriteStatement IfStatement ForStatement
 E := a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z 0 1 2 3 4 5 6 7 8 9 { } [ ] ( ) + - * / % && || ! int < > != <= >= ; .. start stop read write bool mut for in if else = == epsilon
 S := Prog
 P := 
 Prog -> start { StatementList } stop
-StatementList -> Statement ; StatementList | epsilon
-Statement -> VarStatement | AssignStatement | ReadStatement | WriteStatement | IfStatement | ForStatement
+StatementList -> SimpleStatement ; StatementList | BlockStatement StatementList | epsilon ; StatementList | epsilon
+SimpleStatement -> VarStatement | AssignStatement | ReadStatement | WriteStatement
+BlockStatement -> IfStatement | ForStatement
 VarStatement -> Type mut Identifier | Type Identifier
 Type -> int [ Number ] | bool [ Number ] | int | bool
 Number -> NonZeroDigit DigitList | 0
@@ -21,7 +22,7 @@ ArithmeticOperator -> + | - | * | / | %
 ComposedBoolExpression -> BoolExpression | BoolExpression LogicOperator BoolExpression | ( BoolExpression LogicOperator BoolExpression )
 BoolExpression -> Boolean | Identifier | IntExpression ComparisonOperator IntExpression | ( IntExpression ComparisonOperator IntExpression )
 Boolean -> true | false
-ComparisonOperator -> == | <= | >= | < | >
+ComparisonOperator -> == | <= | >= | < | > | !=
 LogicOperator -> && | ||
 ReadStatement -> read ( Identifier )
 WriteStatement -> write ( Identifier )
