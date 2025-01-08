@@ -8,15 +8,29 @@ namespace Parser
     internal partial class RecDescParser
     {
         private readonly Grammar grammar;
-        private readonly List<Terminal> input;
+        private readonly List<Terminal> sequence;
         private int index;  // Pointer to the current input position
         private Stack<string> alpha;  // Partial production rule (α)
         private Stack<Symbol> beta;  // Remaining production (β)
         private char state;  // Current state: q, b, e of f
 
-        public RecDescParser(List<string> input, string filename)
+        public RecDescParser(string filename, List<string>? sequence = null, string? pifPath = null)
         {
-            this.input = input;
+            if (sequence == null && pifPath == null)
+                throw new ArgumentException("Either sequence or pifPath must be provided.");
+
+            if (sequence != null)
+                this.sequence = sequence;
+
+            else if (pifPath != null)
+            {
+                string[] pifRows = File.ReadAllLines(pifPath);
+                this.sequence = [];
+
+                foreach (string row in pifRows)
+                    this.sequence.Add(row.Split(",")[1].Trim());
+            }
+
             grammar = new Grammar(filename);
 
             index = 0;
@@ -63,8 +77,8 @@ namespace Parser
         {
             state = 'b';
 
-            if (index < input.Count && beta.Count > 0)
-                Console.WriteLine($"Momentary Insuccess: Input at index {index} ({input[index]}) does not match head of β ({beta.Peek()}).");
+            if (index < sequence.Count && beta.Count > 0)
+                Console.WriteLine($"Momentary Insuccess: Input at index {index} ({sequence[index]}) does not match head of β ({beta.Peek()}).");
             else
                 Console.WriteLine("Momentary Insuccess");
         }
@@ -204,7 +218,7 @@ namespace Parser
             {
                 if (state == 'q')
                 {
-                    if (index == input.Count && beta.Count == 0) // Success condition
+                    if (index == sequence.Count && beta.Count == 0) // Success condition
                     {
                         state = 'f';
                         Success();
@@ -214,7 +228,7 @@ namespace Parser
                         Symbol head = beta.Peek();
                         if (grammar.Nonterminals.FirstOrDefault(v => v == head) != default)    // Head(β) = Non-terminal
                             Expand();
-                        else if (index < input.Count && (head == input[index] || head == ""))  // Head(β) matches input
+                        else if (index < sequence.Count && (head == sequence[index] || head == ""))  // Head(β) matches input
                             Advance();
                         else                                                                   // Mismatch
                             MomentaryInsuccess();

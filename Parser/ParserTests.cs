@@ -12,7 +12,7 @@
                 Environment.CurrentDirectory = (directory.ToString());
 
                 string mockGrammarFile = "grammars/g1.txt";
-                return new RecDescParser(input, mockGrammarFile);
+                return new RecDescParser(mockGrammarFile, input);
             }
 
 
