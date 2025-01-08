@@ -1,21 +1,23 @@
-N := Prog StatementList Statement VarStatement Type AssignStatement Expression IntExpression ArithmeticOperator ComposedBoolExpression BoolExpression ComparisonOperator LogicOperator ReadStatement WriteStatement IfStatement ForStatement
+N := Prog StatementList SimpleStatement BlockStatement VarStatement Type AssignStatement Identifier Expression IntExpression ArithmeticOperator ComposedBoolExpression BoolExpression ComparisonOperator LogicOperator ReadStatement WriteStatement IfStatement ForStatement
 E := 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 epsilon
 S := Prog
 P := 
 Prog -> 23 15 StatementList 16 24
-StatementList -> Statement 21 StatementList | epsilon 21 StatementList | epsilon
-Statement -> VarStatement | AssignStatement | ReadStatement | WriteStatement | IfStatement | ForStatement
+StatementList -> SimpleStatement 21 StatementList | BlockStatement StatementList | epsilon 21 StatementList | epsilon
+SimpleStatement -> VarStatement | AssignStatement | ReadStatement | WriteStatement
+BlockStatement -> IfStatement | ForStatement
 VarStatement -> Type 29 35 | Type 35
-Type -> 27 19 34 20 | 28 19 34 20 | 27 | 28
-AssignStatement -> 35 10 Expression
+Type -> 27 19 34 20 | 28 19 34 20 | 27 19 Identifier 20 | 28 19 Identifier 20 | 27 | 28
+AssignStatement -> Identifier 10 Expression
+Identifier -> 35 | 35 19 34 20 | 35 19 35 20 | 35 19 IntExpression 20
 Expression -> IntExpression | ComposedBoolExpression
-IntExpression -> 34 | 35 | IntExpression ArithmeticOperator IntExpression | 17 IntExpression ArithmeticOperator IntExpression 18
+IntExpression -> 34 | Identifier | IntExpression ArithmeticOperator IntExpression | 17 IntExpression ArithmeticOperator IntExpression 18
 ArithmeticOperator -> 0 | 1 | 2 | 3 | 4
 ComposedBoolExpression -> BoolExpression | BoolExpression LogicOperator BoolExpression | 17 BoolExpression LogicOperator BoolExpression 18
-BoolExpression -> 34 | 35 | IntExpression ComparisonOperator IntExpression | 17 IntExpression ComparisonOperator IntExpression 18
+BoolExpression -> 34 | Identifier | IntExpression ComparisonOperator IntExpression | 17 IntExpression ComparisonOperator IntExpression 18
 ComparisonOperator -> 8 | 9 | 11 | 12 | 13 | 14 | 15
 LogicOperator -> 5 | 6
-ReadStatement -> 25 17 35 18
-WriteStatement -> 26 17 35 18
+ReadStatement -> 25 17 Identifier 18
+WriteStatement -> 26 17 Identifier 18
 IfStatement -> 32 ComposedBoolExpression 15 StatementList 16 | 32 ComposedBoolExpression 15 StatementList 16 33 15 StatementList 16
-ForStatement -> 30 35 31 34 22 34 15 StatementList 16
+ForStatement -> 30 35 31 IntExpression 22 IntExpression 15 StatementList 16

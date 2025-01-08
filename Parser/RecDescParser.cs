@@ -29,6 +29,7 @@ namespace Parser
 
                 foreach (string row in pifRows)
                     this.sequence.Add(row.Split(",")[1].Trim());
+
             }
 
             grammar = new Grammar(filename);
