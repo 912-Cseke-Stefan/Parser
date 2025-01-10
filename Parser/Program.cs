@@ -14,12 +14,12 @@
                     directory = directory.Parent;
                 Environment.CurrentDirectory = (directory.ToString());
 
-                //RecDescParser parser = new(["a", "a", "c", "b", "c"], "grammars/g1.txt");
+                //RecDescParser parser = new("grammars/g1.txt", sequence: ["a", "a", "c", "b", "c"]);
                 //RecDescParser parser = new(["a", "a", "c", "c", "c"], "grammars/g1.txt");
                 //RecDescParser parser = new(["a", "c", "b", "c"], "grammars/g1.txt");
                 //RecDescParser parser = new(["a", "c"], "grammars/g1.txt");
                 RecDescParser parser = new("grammars/g2_numeric.txt", pifPath: "pifs/pif.out");
-                //RecDescParser parser = new("grammars/g2.txt", sequence: ["start", "{", "int", "x", ";", "}", "stop"]);
+                //RecDescParser parser = new("grammars/g2.txt", sequence: ["start", "{", "int", "x", "(", ")", ";", "}", "stop"]);
                 //RecDescParser parser = new("grammars/g2.txt", sequence: ["start", "{", "int", "x", ";", "if", "x", "==", "0", "{", "x", "=", "1", ";", "}", "}", "stop"]);
                 //RecDescParser parser = new("grammars/g2.txt", sequence: ["start", "{", "if", "x", "==", "0", "{", "x", "=", "1", ";", "}", "}", "stop"]);
                 //RecDescParser parser = new("grammars/g2.txt", sequence: ["start", "{", "if", "true", "{", "x", "=", "1", ";", "}", ";", "}", "stop"]);
